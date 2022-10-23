@@ -1,23 +1,22 @@
-module Article
-    exposing
-        ( Article
-        , Full
-        , Preview
-        , author
-        , body
-        , favorite
-        , favoriteButton
-        , fetch
-        , fromPreview
-        , fullDecoder
-        , mapAuthor
-        , metadata
-        , previewDecoder
-        , slug
-        , unfavorite
-        , unfavoriteButton
-        , url
-        )
+module Article exposing
+    ( Article
+    , Full
+    , Preview
+    , author
+    , body
+    , favorite
+    , favoriteButton
+    , fetch
+    , fromPreview
+    , fullDecoder
+    , mapAuthor
+    , metadata
+    , previewDecoder
+    , slug
+    , unfavorite
+    , unfavoriteButton
+    , url
+    )
 
 {-| The interface to the Article data structure.
 
