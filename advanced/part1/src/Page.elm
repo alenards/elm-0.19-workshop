@@ -71,8 +71,8 @@ viewMenu page maybeViewer =
                 cred =
                     Viewer.cred viewer
 
-                { username } =
-                    cred
+                username =
+                    Cred.getUsername cred
 
                 avatar =
                     Profile.avatar (Viewer.profile viewer)
