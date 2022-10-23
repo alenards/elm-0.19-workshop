@@ -77,8 +77,8 @@ viewMenu page maybeViewer =
                 avatar =
                     Profile.avatar (Viewer.profile viewer)
             in
-            [ linkTo Route.NewArticle [ i [ class "ion-compose" ] [], text " New Post" ]
-            , linkTo Route.Settings [ i [ class "ion-gear-a" ] [], text " Settings" ]
+            [ linkTo Route.NewArticle [ i [ class "ion-compose" ] [], text "\u{00A0}New Post" ]
+            , linkTo Route.Settings [ i [ class "ion-gear-a" ] [], text "\u{00A0}Settings" ]
             , linkTo
                 (Route.Profile username)
                 [ img [ class "user-pic", Avatar.src avatar ] []
