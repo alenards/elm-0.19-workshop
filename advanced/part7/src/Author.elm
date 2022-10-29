@@ -1,20 +1,19 @@
-module Author
-    exposing
-        ( Author(..)
-        , FollowedAuthor
-        , UnfollowedAuthor
-        , decoder
-        , fetch
-        , follow
-        , followButton
-        , profile
-        , requestFollow
-        , requestUnfollow
-        , unfollow
-        , unfollowButton
-        , username
-        , view
-        )
+module Author exposing
+    ( Author(..)
+    , FollowedAuthor
+    , UnfollowedAuthor
+    , decoder
+    , fetch
+    , follow
+    , followButton
+    , profile
+    , requestFollow
+    , requestUnfollow
+    , unfollow
+    , unfollowButton
+    , username
+    , view
+    )
 
 {-| The author of an Article. It includes a Profile.
 
@@ -192,7 +191,7 @@ toggleFollowButton txt extraClasses msgWhenClicked uname =
             "btn btn-sm " ++ String.join " " extraClasses ++ " action-btn"
 
         caption =
-            " " ++ txt ++ " " ++ Username.toString uname
+            "\u{00A0}" ++ txt ++ " " ++ Username.toString uname
     in
     Html.button [ class classStr, onClick msgWhenClicked ]
         [ i [ class "ion-plus-round" ] []
@@ -206,28 +205,25 @@ toggleFollowButton txt extraClasses msgWhenClicked uname =
 
 decoder : Maybe Cred -> Decoder Author
 decoder maybeCred =
-    {- 👉 TODO: Use this `Profile` and `Username` to decode an `Author`!
-
-       💡 HINT: `decoderHelp` will help here, but slightly altering its type may make things easier...
-    -}
-    Decode.succeed "..."
+    Decode.succeed (decoderHelp maybeCred)
         |> custom Profile.decoder
         |> required "username" Username.decoder
+        |> optional "following" Decode.bool False
 
 
-decoderHelp : Maybe Cred -> Profile -> Username -> Decoder Author
-decoderHelp maybeCred prof uname =
+decoderHelp : Maybe Cred -> Profile -> Username -> Bool -> Author
+decoderHelp maybeCred prof uname isFollowing =
     case maybeCred of
         Nothing ->
             -- If you're logged out, you can't be following anyone!
-            Decode.succeed (IsNotFollowing (UnfollowedAuthor uname prof))
+            IsNotFollowing (UnfollowedAuthor uname prof)
 
         Just cred ->
             if uname == Cred.username cred then
-                Decode.succeed (IsViewer cred prof)
+                IsViewer cred prof
 
             else
-                nonViewerDecoder prof uname
+                authorFromFollowing prof uname isFollowing
 
 
 nonViewerDecoder : Profile -> Username -> Decoder Author
