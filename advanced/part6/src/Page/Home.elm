@@ -185,16 +185,37 @@ single source of truth for their state.
 -}
 viewTabs : Bool -> FeedTab -> Html Msg
 viewTabs isLoggedIn activeTab =
-    ul [ class "nav nav-pills outline-active" ] <|
-        case activeTab of
-            YourFeed ->
-                []
+    if isLoggedIn then
+        loggedInTabs activeTab
 
-            GlobalFeed ->
-                []
+    else
+        publicTabs activeTab
 
-            TagFeed tagName ->
-                []
+
+loggedInTabs : FeedTab -> Html Msg
+loggedInTabs activeTab =
+    case activeTab of
+        YourFeed ->
+            tabBar [] yourFeed [ globalFeed ]
+
+        GlobalFeed ->
+            tabBar [ yourFeed ] globalFeed []
+
+        TagFeed tagName ->
+            tabBar [ yourFeed, globalFeed ] (tagFeed tagName) []
+
+
+publicTabs : FeedTab -> Html Msg
+publicTabs activeTab =
+    case activeTab of
+        YourFeed ->
+            text ""
+
+        GlobalFeed ->
+            tabBar [] globalFeed []
+
+        TagFeed tagName ->
+            tabBar [ globalFeed ] (tagFeed tagName) []
 
 
 tabBar :
