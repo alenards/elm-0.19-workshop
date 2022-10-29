@@ -205,25 +205,25 @@ toggleFollowButton txt extraClasses msgWhenClicked uname =
 
 decoder : Maybe Cred -> Decoder Author
 decoder maybeCred =
-    Decode.succeed (decoderHelp maybeCred)
+    Decode.succeed Tuple.pair
         |> custom Profile.decoder
         |> required "username" Username.decoder
-        |> optional "following" Decode.bool False
+        |> Decode.andThen (decoderHelp maybeCred)
 
 
-decoderHelp : Maybe Cred -> Profile -> Username -> Bool -> Author
-decoderHelp maybeCred prof uname isFollowing =
+decoderHelp : Maybe Cred -> ( Profile, Username ) -> Decoder Author
+decoderHelp maybeCred ( prof, uname ) =
     case maybeCred of
         Nothing ->
             -- If you're logged out, you can't be following anyone!
-            IsNotFollowing (UnfollowedAuthor uname prof)
+            Decode.succeed (IsNotFollowing (UnfollowedAuthor uname prof))
 
         Just cred ->
             if uname == Cred.username cred then
-                IsViewer cred prof
+                Decode.succeed (IsViewer cred prof)
 
             else
-                authorFromFollowing prof uname isFollowing
+                nonViewerDecoder prof uname
 
 
 nonViewerDecoder : Profile -> Username -> Decoder Author
